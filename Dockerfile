@@ -1,5 +1,5 @@
-FROM quay.io/venezia/golang:1.18.2-alpine3.16
-ARG CODEGEN_TAG=kubernetes-1.24.1
+FROM quay.io/venezia/golang:1.18.4-alpine3.16
+ARG CODEGEN_TAG=kubernetes-1.24.3
 
 RUN apk update && apk add git bash
 RUN git clone https://github.com/kubernetes/code-generator.git
