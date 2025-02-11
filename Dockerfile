@@ -1,12 +1,16 @@
-FROM golang:1.20.5-alpine3.18
-#FROM quay.io/venezia/golang:1.20.5-alpine3.18
-ARG CODEGEN_TAG=kubernetes-1.27.3
+FROM golang:1.23.6-alpine3.20
+ARG CODEGEN_TAG=kubernetes-1.32.1
 
-RUN apk update && apk add git bash
-RUN git clone https://github.com/kubernetes/code-generator.git
-WORKDIR /go/code-generator
-RUN    git checkout ${CODEGEN_TAG}
-# induce the golang libraries to be pulled in for faster runtime work
-RUN    bash /go/code-generator/generate-groups.sh foo bar foo foo
+RUN apk update && apk add git bash openssh && \
+  go install k8s.io/code-generator/cmd/applyconfiguration-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/conversion-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/defaulter-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/informer-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/prerelease-lifecycle-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/client-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/deepcopy-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/go-to-protobuf@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/lister-gen@${CODEGEN_TAG} && \
+  go install k8s.io/code-generator/cmd/register-gen@${CODEGEN_TAG}
 
 ENTRYPOINT /bin/bash
